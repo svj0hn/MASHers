@@ -1,4 +1,4 @@
-function [W] = mosh(N, activeFraction, roomSize, startCentered, alpha, sigma)
+function [W] = mosh(N, panickedFraction, roomSize, alpha, sigma)
 
 %alpha = 0.35;
 epsilon = 25;
@@ -17,21 +17,10 @@ L = roomSize;
 p = L*rand(N, 2);
 v = zeros(N, 2);
 
-numActive = floor(N * activeFraction);
-isActive = zeros(N, 1);
+numPanicked = floor(N * panickedFraction);
+isPanicked = zeros(N, 1);
 
-W = 0;
-Wabs = 0;
-ract = zeros(numActive, 3);
-vact = zeros(numActive, 3);
-
-if (startCentered == 1)
-    ri = sqrt(sum((p - L / 2).^2, 2));
-    [~, minIndex] = sort(ri);
-    isActive(minIndex(1:numActive)) = 1;
-else
-    isActive(1:numActive) = 1;
-end
+isPanicked(1:numPanicked) = 1;
 
 for t = 0:T
     % Update position vector according to boundary conditions
@@ -47,7 +36,7 @@ for t = 0:T
     end
     
     % Center of mass for active MASHers
-    MC = sum(p(isActive == 1, :)) / numActive;
+    MC = sum(p(isPanicked == 1, :)) / numPanicked;
     
     F = zeros(size(v));
     for i = 1:N
@@ -64,7 +53,7 @@ for t = 0:T
             Frep = -epsilon / (2 * r0)^1.5 * ((2 * r0 - ri(repIndex)').^1.5) * Frep;
         end
         
-        if (isActive(i))
+        if (isPanicked(i))
             % Propulsion force for Active MASHer
             vi = sqrt(sum(v(i, :).^2));
             Fprop = my * (v0 - vi) * v(i, :) / (vi + (vi == 0));
@@ -98,14 +87,14 @@ for t = 0:T
     
     if (~mod(t, 1))
         hold off
-        plot(p(isActive == 0, 1) ,p(isActive == 0, 2), 'k.', 'markersize', 25);
+        plot(p(isPanicked == 0, 1) ,p(isPanicked == 0, 2), 'k.', 'markersize', 25);
         hold on
-        plot(p(isActive == 1, 1) ,p(isActive == 1, 2), 'r.', 'markersize', 25);
+        plot(p(isPanicked == 1, 1) ,p(isPanicked == 1, 2), 'r.', 'markersize', 25);
         plot(MC(1), MC(2), 'b.', 'markersize', 25);
         axis([0 L 0 L]);
-        quiver(p(isActive == 1, 1), p(isActive == 1, 2), v(isActive == 1, 1), v(isActive == 1, 2), 0);
+        quiver(p(isPanicked == 1, 1), p(isPanicked == 1, 2), v(isPanicked == 1, 1), v(isPanicked == 1, 2), 0);
         pause(0.01);
     end
 end
-W = abs(W);
+W = 1;
 return

@@ -20,8 +20,6 @@ v = zeros(N, 2);
 numPanicked = floor(N * panickedFraction);
 isPanicked = zeros(N, 1);
 
-W = 0;
-
 isPanicked(1:numPanicked) = 1;
 
 for t = 0:T
