@@ -21,9 +21,6 @@ numPanicked = floor(N * panickedFraction);
 isPanicked = zeros(N, 1);
 
 W = 0;
-Wabs = 0;
-ract = zeros(numPanicked, 3);
-vact = zeros(numPanicked, 3);
 
 isPanicked(1:numPanicked) = 1;
 
@@ -101,5 +98,5 @@ for t = 0:T
         pause(0.01);
     end
 end
-W = abs(W);
+W = 1;
 return
