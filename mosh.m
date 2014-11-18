@@ -25,6 +25,15 @@ isPanicked(1:numPanicked) = 1;
 for t = 0:T
     % Update position vector according to boundary conditions
     p = p + dt * v;
+    if (periodicBoundary)
+        p(p > L) = p(p > L) - L;
+        p(p < 0) = p(p < 0) + L;
+    else
+        v(p > L) = 0; %-v(p > L);
+        p(p > L) = L;
+        v(p < 0) = 0; %-v(p < 0);
+        p(p < 0) = 0;
+    end
     
     % Center of mass for active MASHers
     MC = sum(p(isPanicked == 1, :)) / numPanicked;
